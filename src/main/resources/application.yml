@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: '@project.artifactId@'
+  data:
+    jpa:
+      repositories:
+        enabled: true
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    show-sql: ${SHOW_SQL:true}
+    hibernate:
+      ddl-auto: validate
+      connection:
+        provider_class: org.hibernate.hikaricp.internal.HikariCPConnectionProvider
+  datasource:
+    password: ${DB_USER_PASS:P@ss}
+    username: ${DB_USER:embl_ebi}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:embl_ebi}
+    initialization-mode: never
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      minimumIdle: 5
+      maximumPoolSize: 20
+      idleTimeout: 30000
+      poolName: SpringBootJPAHikariCP
+      maxLifetime: 2000000
+      connectionTimeout: 30000
+      data-source-properties:
+        cachePrepStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        useServerPrepStmts: true
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+    uk.ac.ebi.codetest: DEBUG

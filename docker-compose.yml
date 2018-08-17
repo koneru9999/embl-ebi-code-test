@@ -1,0 +1,36 @@
+version: '3'
+services:
+  db:
+    build: ./src/main/docker/postgres/
+    environment:
+      POSTGRES_USER: embl_ebi
+      POSTGRES_PASSWORD: P@ss
+      POSTGRES_DB: embl_ebi
+    ports:
+      - "5432:5432"
+    volumes:
+      - "/Users/venkaiahchowdarykoneru/git/DOCKER/DataVolumes/postgresql/embl_ebi:/var/lib/postgresql/data"
+    networks:
+      - embl-ebi-nw
+
+  person-service:
+    image: codetest
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: embl_ebi
+      DB_USER: embl_ebi
+      DB_PASS: P@ss
+      SPRING_PROFILES_ACTIVE: demo
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    links:
+      - db
+    networks:
+      - embl-ebi-nw
+
+networks:
+  embl-ebi-nw:
+    driver: bridge
