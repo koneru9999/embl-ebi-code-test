@@ -14,7 +14,7 @@ services:
       - embl-ebi-nw
 
   person-service:
-    image: codetest
+    build: .
     environment:
       DB_HOST: db
       DB_PORT: 5432

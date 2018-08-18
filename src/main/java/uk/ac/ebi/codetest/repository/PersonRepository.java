@@ -5,6 +5,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import uk.ac.ebi.codetest.model.Person;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -13,4 +14,10 @@ import java.util.UUID;
 @Repository
 public interface PersonRepository extends PagingAndSortingRepository<Person, UUID>,
         JpaSpecificationExecutor<Person> {
+
+    /**
+     * @param id
+     * @return
+     */
+    Optional<Person> findByIdAndDeletedFalse(Long id);
 }

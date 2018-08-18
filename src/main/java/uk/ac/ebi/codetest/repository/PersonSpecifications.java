@@ -24,6 +24,19 @@ public final class PersonSpecifications {
     }
 
     /**
+     * @return
+     */
+    public static Specification<Person> findAllNonDeleted() {
+        return (Root<Person> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            predicates.add(criteriaBuilder.isFalse(root.get(Person_.deleted)));
+
+            return criteriaBuilder.and(predicates.stream().toArray(Predicate[]::new));
+        };
+    }
+
+    /**
      * @param searchToken
      * @return
      */
@@ -39,10 +52,6 @@ public final class PersonSpecifications {
                 predicates.add(cb.or(cb.like(cb.lower(root.get(Person_.firstName)), containsLikePattern),
                         cb.like(cb.lower(root.get(Person_.lastName)), containsLikePattern)));
             }
-
-//            if (status != null) {
-//                predicates.add(cb.equal(root.get(Product_.productStatus), status));
-//            }
 
             return cb.and(predicates.stream().toArray(Predicate[]::new));
         };

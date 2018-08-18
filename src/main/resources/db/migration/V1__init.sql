@@ -1,28 +1,18 @@
-CREATE TABLE COLOR (
-  color_code VARCHAR(20) NOT NULL,
-  description VARCHAR(150),
-  PRIMARY KEY(color_code)
-);
+CREATE SEQUENCE PERSON_ID_SEQ;
 
 CREATE TABLE PERSON (
-    person_id uuid DEFAULT uuid_generate_v4(),
+    person_id BIGINT NOT NULL DEFAULT nextval('PERSON_ID_SEQ'),
     created_date timestamp DEFAULT CURRENT_TIMESTAMP,
     deleted boolean,
     last_modified_date timestamp DEFAULT NULL,
     version integer,
-    first_name varchar(150),
-    last_name varchar(50) UNIQUE NOT NULL,
-    age integer NOT NULL,
-    favourite_colour_id VARCHAR(20) REFERENCES COLOR(color_code),
+    first_name varchar(150) NOT NULL,
+    last_name varchar(150) NOT NULL,
+    age varchar(3) NOT NULL,
+    favourite_colour VARCHAR(20) NOT NULL,
     PRIMARY KEY(person_id)
 );
 
 CREATE INDEX ix_fname ON PERSON(first_name);
 CREATE INDEX ix_lname ON PERSON(last_name);
-
-CREATE TABLE PERSON_EXTENSIONS (
-    person_id uuid REFERENCES PERSON(person_id) NOT NULL,
-    extension_key varchar(100) NOT NULL,
-    extension_value varchar(255),
-    CONSTRAINT key_id PRIMARY KEY(extension_key, person_id)
-);
+CREATE INDEX ix_fav_colour ON PERSON(favourite_colour);
