@@ -10,12 +10,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.ac.ebi.codetest.CodeTestApplication;
+import uk.ac.ebi.codetest.dto.PersonWithIdDTO;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -64,6 +64,19 @@ public class PersonControllerIntegrationTest {
     }
 
     @Test
+    public void givenReadWriteUser_whenDeletePersons_thenStatus403() throws Exception {
+        mvc.perform(delete("/person/0")
+                .with(httpBasic("user2", "password"))
+        ).andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void givenNoAuthz_whenDeletePersons_thenStatus401() throws Exception {
+        mvc.perform(delete("/person/0")
+        ).andExpect(status().isUnauthorized());
+    }
+
+    @Test
     public void givenNoAuthz_whenPutPerson_thenStatus401() throws Exception {
         mvc.perform(put("/person"))
                 .andExpect(status().isUnauthorized());
@@ -90,18 +103,81 @@ public class PersonControllerIntegrationTest {
                 .andExpect(jsonPath("$.first_name", is("Venkaiah")))
                 .andExpect(jsonPath("$.last_name", is("Koneru")))
                 .andExpect(jsonPath("$.favourite_colour", is("blue")))
-                .andExpect(jsonPath("$.age", is("35")));
+                .andExpect(jsonPath("$.age", is("35")))
+                .andDo(handler -> {
 
-        mvc.perform(get("/person")
+                    PersonWithIdDTO personWithIdDTO = objectMapper.readValue(handler.getResponse()
+                            .getContentAsString(), PersonWithIdDTO.class);
+
+                    // Get by ID
+                    mvc.perform(get("/person/" + personWithIdDTO.getId())
+                            .with(httpBasic("manager", "password"))
+                    ).andExpect(status().isOk())
+                            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                            .andDo(print())
+                            .andExpect(jsonPath("$.first_name", is("Venkaiah")))
+                            .andExpect(jsonPath("$.last_name", is("Koneru")))
+                            .andExpect(jsonPath("$.favourite_colour", is("blue")))
+                            .andExpect(jsonPath("$.age", is("35")));
+
+                    // Get all
+                    mvc.perform(get("/person")
+                            .with(httpBasic("manager", "password"))
+                    ).andExpect(status().isOk())
+                            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                            .andDo(print())
+                            .andExpect(jsonPath("$.person", hasSize(1)))
+                            .andExpect(jsonPath("$.person[0].first_name", is("Venkaiah")))
+                            .andExpect(jsonPath("$.person[0].last_name", is("Koneru")))
+                            .andExpect(jsonPath("$.person[0].favourite_colour", is("blue")))
+                            .andExpect(jsonPath("$.person[0].age", is("35")));
+                });
+    }
+
+    @Test
+    public void givenWriteUser_whenDeletePerson_thenStatus200() throws Exception {
+        mvc.perform(put("/person")
+                .content(getPersonInJson())
+                .contentType(MediaType.APPLICATION_JSON)
                 .with(httpBasic("manager", "password"))
-        ).andExpect(status().isOk())
+        ).andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andDo(print())
-                .andExpect(jsonPath("$.person", hasSize(1)))
-                .andExpect(jsonPath("$.person[0].first_name", is("Venkaiah")))
-                .andExpect(jsonPath("$.person[0].last_name", is("Koneru")))
-                .andExpect(jsonPath("$.person[0].favourite_colour", is("blue")))
-                .andExpect(jsonPath("$.person[0].age", is("35")));
+                .andExpect(jsonPath("$.first_name", is("Venkaiah")))
+                .andExpect(jsonPath("$.last_name", is("Koneru")))
+                .andExpect(jsonPath("$.favourite_colour", is("blue")))
+                .andExpect(jsonPath("$.age", is("35")))
+                .andDo(handler -> {
+
+                    PersonWithIdDTO personWithIdDTO = objectMapper.readValue(handler.getResponse()
+                            .getContentAsString(), PersonWithIdDTO.class);
+
+                    // Get all
+                    mvc.perform(get("/person")
+                            .with(httpBasic("manager", "password"))
+                    ).andExpect(status().isOk())
+                            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                            .andDo(print())
+                            .andExpect(jsonPath("$.person", hasSize(1)))
+                            .andExpect(jsonPath("$.person[0].first_name", is("Venkaiah")))
+                            .andExpect(jsonPath("$.person[0].last_name", is("Koneru")))
+                            .andExpect(jsonPath("$.person[0].favourite_colour", is("blue")))
+                            .andExpect(jsonPath("$.person[0].age", is("35")));
+
+
+                    mvc.perform(delete("/person/" + personWithIdDTO.getId())
+                            .with(httpBasic("manager", "password"))
+                    ).andExpect(status().isOk());
+
+                    // Get all
+                    mvc.perform(get("/person")
+                            .with(httpBasic("manager", "password"))
+                    ).andExpect(status().isOk())
+                            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                            .andDo(print())
+                            .andExpect(jsonPath("$.person", hasSize(0)));
+                });
+
     }
 
     private String getPersonInJson() {
