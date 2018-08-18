@@ -13,6 +13,10 @@ import uk.ac.ebi.codetest.events.PersonCreatedEvent;
 @Component
 @Slf4j
 public class PersonCreatedEventListener implements ApplicationListener<PersonCreatedEvent> {
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onApplicationEvent(PersonCreatedEvent event) {
         log.info("A new person event is received {}", event);

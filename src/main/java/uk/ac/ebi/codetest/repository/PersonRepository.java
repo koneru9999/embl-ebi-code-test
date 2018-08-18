@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
+ * Person repository
+ *
  * @author Venkaiah Chowdary Koneru
  */
 @Repository
@@ -16,8 +18,11 @@ public interface PersonRepository extends PagingAndSortingRepository<Person, UUI
         JpaSpecificationExecutor<Person> {
 
     /**
-     * @param id
-     * @return
+     * fetch a person for the supplied argument id. Deleted person(s) are excluded.
+     *
+     * @param id id of person to retrieve
+     *
+     * @return Person object
      */
     Optional<Person> findByIdAndDeletedFalse(Long id);
 }

@@ -18,12 +18,14 @@ import java.util.List;
 public final class PersonSpecifications {
 
     /**
-     *
+     * private to prevent un-necessary instantiation.
      */
     private PersonSpecifications() {
     }
 
     /**
+     * criteria to filter deleted persons
+     *
      * @return
      */
     public static Specification<Person> findAllNonDeleted() {
@@ -37,7 +39,10 @@ public final class PersonSpecifications {
     }
 
     /**
+     * criteria to search by supplied token. excludes deleted person.
+     *
      * @param searchToken
+     *
      * @return
      */
     public static Specification<Person> personByFirstnameOrLastname(String searchToken) {
@@ -59,6 +64,7 @@ public final class PersonSpecifications {
 
     /**
      * @param searchTerm
+     *
      * @return
      */
     private static String getContainsLikePattern(String searchTerm) {

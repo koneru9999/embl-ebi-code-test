@@ -6,6 +6,8 @@ import uk.ac.ebi.codetest.dto.PersonWithIdDTO;
 import uk.ac.ebi.codetest.model.Person;
 
 /**
+ * Mapper interface for person dto <--> person entity.
+ *
  * @author Venkaiah Chowdary Koneru
  */
 @Mapper(componentModel = "spring")

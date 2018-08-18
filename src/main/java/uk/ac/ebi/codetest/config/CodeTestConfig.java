@@ -12,6 +12,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 /**
+ * Application configuration
+ *
  * @author Venkaiah Chowdary Koneru
  */
 @Configuration
@@ -28,9 +30,11 @@ public class CodeTestConfig {
      * Default behaviour of Spring's event ecosystem is synchronous.
      * <p>
      * With this multi caster present in the context, event ecosystem will act as asynchronous.
+     *
+     * @return multi cast event publisher
      */
     @Bean(name = "applicationEventMulticaster")
-    ApplicationEventMulticaster simpleApplicationEventMulticaster() {
+    public ApplicationEventMulticaster simpleApplicationEventMulticaster() {
         SimpleApplicationEventMulticaster eventMulticaster
                 = new SimpleApplicationEventMulticaster();
 
@@ -39,8 +43,8 @@ public class CodeTestConfig {
     }
 
     /**
-     * Configures ObjectMapper with Include.NON_NULL using setSerializationInclusion() that
-     * ignore Null values globally for every class.
+     * Configures ObjectMapper with Include.NON_NULL using setSerializationInclusion() that ignore Null values globally
+     * for every class.
      *
      * @return object mapper bean instance
      */

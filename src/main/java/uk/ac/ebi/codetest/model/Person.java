@@ -10,6 +10,8 @@ import javax.persistence.*;
 import static javax.persistence.GenerationType.SEQUENCE;
 
 /**
+ * Person entity class.
+ *
  * @author Venkaiah Chowdary Koneru
  */
 @Table(name = "person", indexes = {

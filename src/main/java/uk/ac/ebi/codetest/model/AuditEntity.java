@@ -9,6 +9,11 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * Base audit entity class which can be extended by any entity class
+ *
+ * @author Venkaiah Chowdary Koneru
+ */
 @Data
 @EqualsAndHashCode
 @MappedSuperclass

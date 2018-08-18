@@ -26,14 +26,13 @@ public final class ValidationUtil {
     }
 
     /**
-     * Validates a DTO Object against all validation groups. <br/>
-     * This helper method is intended for grabbing all the messages across all
-     * the groups instead of one group single time.
+     * Validates a DTO Object against all validation groups. <br/> This helper method is intended for grabbing all the
+     * messages across all the groups instead of one group single time.
      *
      * @param dto       the object that need to be validated
      * @param validator the JSR-303 Validator instance
-     * @return A Map of errors with property name as keys and error codes as
-     * values
+     *
+     * @return A Map of errors with property name as keys and error codes as values
      */
     public static Map<String, String> validateDTO(final Object dto,
                                                   final Validator validator) {
@@ -51,8 +50,7 @@ public final class ValidationUtil {
     }
 
     /**
-     * helper method to process constraint violations and put every violation
-     * into a Map
+     * helper method to process constraint violations and put every violation into a Map
      *
      * @param violations The JSR-303 ConstraintViolation results
      * @param errors     a non-null hash map to store the processed violations

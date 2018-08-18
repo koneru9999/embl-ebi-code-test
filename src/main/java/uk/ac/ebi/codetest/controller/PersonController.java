@@ -13,6 +13,11 @@ import uk.ac.ebi.codetest.service.PersonService;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Controller for person REST endpoints.
+ *
+ * @author Venkaiah Chowdary Koneru
+ */
 @RestController
 @RequestMapping("/person")
 public class PersonController {
@@ -20,7 +25,7 @@ public class PersonController {
     private final PersonService personService;
 
     /**
-     * @param personService
+     * @param personService person service bean
      */
     @Autowired
     public PersonController(PersonService personService) {
@@ -28,8 +33,11 @@ public class PersonController {
     }
 
     /**
-     * @param personDTO
-     * @return
+     * REST endpoint for storing person
+     *
+     * @param personDTO person object to store
+     *
+     * @return person object with id
      */
     @RequestMapping(method = RequestMethod.PUT)
     @PreAuthorize("hasAuthority('WRITE_PRIVILEGES')")
@@ -39,8 +47,11 @@ public class PersonController {
     }
 
     /**
-     * @param personDTO
-     * @return
+     * REST endpoint for updating person
+     *
+     * @param personDTO person object to update
+     *
+     * @return updated person object with id
      */
     @RequestMapping(method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('WRITE_PRIVILEGES')")
@@ -49,8 +60,11 @@ public class PersonController {
     }
 
     /**
-     * @param id
-     * @return
+     * REST endpoint for retrieving person by ID
+     *
+     * @param id id of person to retrieve
+     *
+     * @return person object
      */
     @RequestMapping(path = "/{id}", method = RequestMethod.GET)
     @PreAuthorize("hasAuthority('READ_PRIVILEGES')")
@@ -59,7 +73,9 @@ public class PersonController {
     }
 
     /**
-     * @return
+     * REST endpoint for retrieving all active persons
+     *
+     * @return person list object with all persons
      */
     @RequestMapping(method = RequestMethod.GET)
     @PreAuthorize("hasAuthority('READ_PRIVILEGES')")
@@ -74,8 +90,9 @@ public class PersonController {
     }
 
     /**
-     * @param id
-     * @return
+     * REST endpoint to delete a person by ID
+     *
+     * @param id id of person to delete
      */
     @RequestMapping(path = "/{id}", method = RequestMethod.DELETE)
     @PreAuthorize("hasAuthority('WRITE_PRIVILEGES')")

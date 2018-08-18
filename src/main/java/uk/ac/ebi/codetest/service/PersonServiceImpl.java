@@ -23,7 +23,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
+ * Service implementation for person service.
+ *
  * @author Venkaiah Chowdary Koneru
+ * @see PersonService
  */
 @Service
 @Transactional(readOnly = true)
@@ -33,6 +36,7 @@ public class PersonServiceImpl implements PersonService {
     private final PersonMapper personMapper;
     private final Validator validator;
     private final ApplicationEventPublisher applicationEventPublisher;
+
     /**
      * @param personRepository
      * @param personMapper
@@ -65,6 +69,7 @@ public class PersonServiceImpl implements PersonService {
 
         Person savedPerson = personRepository.save(personMapper.personDtoToPerson(personDTO));
 
+        // Publish created event
         applicationEventPublisher.publishEvent(new PersonCreatedEvent(this, savedPerson));
 
         return personMapper.personToPersonIdDTO(savedPerson);
@@ -92,7 +97,12 @@ public class PersonServiceImpl implements PersonService {
         person.setLastName(personDTO.getLastName());
         person.setFavouriteColour(personDTO.getFavouriteColour());
 
-        return personMapper.personToPersonIdDTO(personRepository.save(person));
+        Person updatedPerson = personRepository.save(person);
+
+        // Publish updated event
+        applicationEventPublisher.publishEvent(new PersonCreatedEvent(this, updatedPerson));
+
+        return personMapper.personToPersonIdDTO(updatedPerson);
     }
 
     /**
@@ -104,7 +114,10 @@ public class PersonServiceImpl implements PersonService {
         Person person = personRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(ResourceNotFoundException::new);
         person.setDeleted(Boolean.TRUE);
-        personRepository.save(person);
+        Person deletedPerson = personRepository.save(person);
+
+        // Publish deleted event
+        applicationEventPublisher.publishEvent(new PersonCreatedEvent(this, deletedPerson));
     }
 
     /**
